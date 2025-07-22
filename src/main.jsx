@@ -9,9 +9,12 @@ import AccontInfo from "./pages/account.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
-  { path: "login", element: <Login /> },
-  { path: "singup", element: <Singup /> },
-  { path: "account", element: <AccontInfo /> },
+  { path: "/login", element: <Login /> },
+  { path: "/singup", element: <Singup /> },
+  { path: "/account", element: <AccontInfo /> },
+  {
+    basename: "/Move-Page",
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
