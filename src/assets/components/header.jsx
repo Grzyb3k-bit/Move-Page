@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import menu from "../img/menu.png";
 import user from "../img/user.png";
 
-// Menu (górne)
 export const Menu = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const menuItems = ["Showcase", "Designers", "Learn & Support"];
+  const menuItems = [
+    { label: "Designers", path: "/Designers" },
+    { label: "Learn & Support", path: "/support" },
+  ];
 
   return (
     <ul className="flex flex-row items-center space-x-4 text-white max-[800px]:hidden">
       {menuItems.map((item, index) => (
-        <li
-          key={index}
-          onClick={() => setActiveIndex(index)}
-          className={`cursor-pointer ${
-            activeIndex === index ? "text-white" : "text-gray-600"
-          }`}
-        >
-          {item}
-        </li>
+        <Link to={item.path} key={index}>
+          <li
+            onClick={() => setActiveIndex(index)}
+            className={`cursor-pointer ${
+              activeIndex === index ? "text-white" : "text-gray-600"
+            }`}
+          >
+            {item.label}
+          </li>
+        </Link>
       ))}
     </ul>
   );

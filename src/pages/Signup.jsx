@@ -14,13 +14,11 @@ function Signup() {
 
   const navigate = useNavigate();
 
-  // Załaduj użytkowników z localStorage po załadowaniu komponentu
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
     setUsers(storedUsers);
   }, []);
 
-  // Sprawdź, czy login/nick/email już istnieją
   const foundLogin = users.find((u) => u.login === login);
   const foundNick = users.find((u) => u.nick === nick);
   const foundEmail = users.find((u) => u.email === email);
@@ -38,8 +36,6 @@ function Signup() {
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setUsers(updatedUsers);
 
-    alert("Konto zostało utworzone!");
-
     // Reset formularza
     setLogin("");
     setNick("");
@@ -47,9 +43,10 @@ function Signup() {
     setPassword("");
     setConfirmPassword("");
 
-    // Przekierowanie do strony logowania (opcjonalnie)
     navigate("/login");
   };
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const isEmailValid = emailPattern.test(email);
 
   return (
     <>
@@ -93,10 +90,11 @@ function Signup() {
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               required
             />
-            {foundEmail && (
-              <span className="text-red-600">Ten email jest już używany</span>
+            {email && !isEmailValid && (
+              <span className="text-red-600">Nieprawidłowy adres e-mail</span>
             )}
 
             <div className="relative w-full">
@@ -131,6 +129,7 @@ function Signup() {
             )}
 
             {email &&
+              isEmailValid &&
               password &&
               login &&
               nick &&
