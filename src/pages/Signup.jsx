@@ -19,19 +19,27 @@ function Signup() {
     setUsers(storedUsers);
   }, []);
 
-  const foundLogin = users.find((u) => u.login === login);
-  const foundNick = users.find((u) => u.nick === nick);
-  const foundEmail = users.find((u) => u.email === email);
+  // Przycięte dane
+  const trimmedLogin = login.trim();
+  const trimmedNick = nick.trim();
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
+  const trimmedConfirmPassword = confirmPassword.trim();
+
+  // Sprawdzenie, czy dane są już używane
+  const foundLogin = users.find((u) => u.login === trimmedLogin);
+  const foundNick = users.find((u) => u.nick === trimmedNick);
+  const foundEmail = users.find((u) => u.email === trimmedEmail);
 
   const handleCreateAccount = () => {
     const newUser = {
       id: Date.now(),
-      login,
-      nick,
-      email,
-      password,
+      login: trimmedLogin,
+      nick: trimmedNick,
+      email: trimmedEmail,
+      password: trimmedPassword,
     };
-    console.log(users);
+
     const updatedUsers = [...users, newUser];
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setUsers(updatedUsers);
@@ -45,8 +53,21 @@ function Signup() {
 
     navigate("/login");
   };
+
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const isEmailValid = emailPattern.test(email);
+  const isEmailValid = emailPattern.test(trimmedEmail);
+
+  const isFormValid =
+    trimmedLogin &&
+    trimmedNick &&
+    trimmedEmail &&
+    trimmedPassword.length > 4 &&
+    trimmedConfirmPassword &&
+    isEmailValid &&
+    trimmedPassword === trimmedConfirmPassword &&
+    !foundLogin &&
+    !foundNick &&
+    !foundEmail;
 
   return (
     <>
@@ -68,6 +89,9 @@ function Signup() {
               onChange={(e) => setLogin(e.target.value)}
               required
             />
+            {login && trimmedLogin === "" && (
+              <span className="text-red-600">Login nie może być pusty</span>
+            )}
             {foundLogin && (
               <span className="text-red-600">Ten login jest już używany</span>
             )}
@@ -80,6 +104,9 @@ function Signup() {
               onChange={(e) => setNick(e.target.value)}
               required
             />
+            {nick && trimmedNick === "" && (
+              <span className="text-red-600">Nick nie może być pusty</span>
+            )}
             {foundNick && (
               <span className="text-red-600">Ten nick jest już używany</span>
             )}
@@ -90,11 +117,18 @@ function Signup() {
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               required
             />
+            {email && trimmedEmail === "" && (
+              <span className="text-red-600">E-mail nie może być pusty</span>
+            )}
             {email && !isEmailValid && (
               <span className="text-red-600">Nieprawidłowy adres e-mail</span>
+            )}
+            {foundEmail && (
+              <span className="text-red-600">
+                Ten e-mail jest już zarejestrowany
+              </span>
             )}
 
             <div className="relative w-full">
@@ -102,6 +136,7 @@ function Signup() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Hasło"
                 className="w-full mb-1 mt-2 px-4 py-2 border rounded pr-10"
+                minLength={4}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -114,6 +149,9 @@ function Signup() {
                   <GrFormView />
                 </div>
               )}
+              {password && trimmedPassword.length < 4 && (
+                <span className="text-red-600">Hasło musi mieć 4 znaki</span>
+              )}
             </div>
 
             <input
@@ -124,27 +162,19 @@ function Signup() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            {password !== confirmPassword && (
+            {trimmedPassword !== trimmedConfirmPassword && (
               <span className="text-red-600">Hasła są różne</span>
             )}
 
-            {email &&
-              isEmailValid &&
-              password &&
-              login &&
-              nick &&
-              password === confirmPassword &&
-              !foundLogin &&
-              !foundNick &&
-              !foundEmail && (
-                <button
-                  type="button"
-                  onClick={handleCreateAccount}
-                  className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 mb-2 mt-2"
-                >
-                  Utwórz konto
-                </button>
-              )}
+            {isFormValid && (
+              <button
+                type="button"
+                onClick={handleCreateAccount}
+                className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 mb-2 mt-2"
+              >
+                Utwórz konto
+              </button>
+            )}
 
             <Link to="/">
               <button

@@ -10,7 +10,7 @@ function Login() {
 
   const handleLoginIN = (e) => {
     e.preventDefault();
-    const storeuser = JSON.parse(localStorage.getItem("users") || []);
+    const storeuser = JSON.parse(localStorage.getItem("users") || "[]");
     const matchedUser = storeuser.find(
       (user) => user.login === login && user.password === Password
     );

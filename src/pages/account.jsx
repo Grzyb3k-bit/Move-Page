@@ -62,7 +62,7 @@ const Account = () => {
         <Header />
       </div>
 
-      <main className="flex flex-col lg:flex-row lg:justify-between p-4 gap-4 h-[92%] w-full">
+      <main className="flex flex-col lg:flex-row lg:justify-between p-4 gap-4 h-[92%] w-full bg-gray-700">
         <section className="flex-1 bg-gray-900 p-4 rounded-xl flex flex-col items-center justify-evenly text-white">
           <img
             src={userIcon}

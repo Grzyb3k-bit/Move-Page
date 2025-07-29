@@ -174,14 +174,13 @@ const Header = () => {
             alt="Hamburger_menu"
             className="w-[30px] h-[30px] flex cursor-pointer ml-auto"
           />
+          <Link to={"/designers"}>
+            <p className="cursor-pointer pt-3 pl-1.5">Designers</p>
+          </Link>
+          <Link to={"/support"}>
+            <p className="cursor-pointer pt-3 pb-3 pl-1.5">Learn & Support</p>
+          </Link>
 
-          <p className="cursor-pointer">Showcase</p>
-          <p className="cursor-pointer">Designers</p>
-          <p className="cursor-pointer">Learn & Support</p>
-          <hr className="border-gray-600" />
-          <p className="cursor-pointer">Popular</p>
-          <p className="cursor-pointer">Recent</p>
-          <p className="cursor-pointer">Clonenable</p>
           <hr className="border-gray-600" />
 
           {!isLoggedIn ? (
