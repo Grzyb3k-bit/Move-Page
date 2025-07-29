@@ -3,14 +3,14 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import Login from "./pages/login.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import Singup from "./pages/Signup.jsx";
 import AccontInfo from "./pages/account.jsx";
 import Designers from "./pages/Designers.jsx";
 import NotfoundPage from "./pages/Notf.jsx";
 import Support from "./pages/Support.jsx";
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   [
     { path: "/", element: <App /> },
     { path: "/login", element: <Login /> },
@@ -24,7 +24,6 @@ const router = createBrowserRouter(
     basename: "/Move-Page",
   }
 );
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <RouterProvider router={router} />
