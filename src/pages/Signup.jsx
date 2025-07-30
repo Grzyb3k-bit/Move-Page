@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../assets/components/header";
 import { useState, useEffect } from "react";
 import { GrFormView } from "react-icons/gr";
@@ -11,6 +11,13 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [users, setUsers] = useState([]);
+  const [touched, setTouched] = useState({
+    login: false,
+    nick: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
 
   const navigate = useNavigate();
 
@@ -19,58 +26,59 @@ function Signup() {
     setUsers(storedUsers);
   }, []);
 
-  // Przycięte dane
-  const trimmedLogin = login.trim();
-  const trimmedNick = nick.trim();
-  const trimmedEmail = email.trim();
-  const trimmedPassword = password.trim();
-  const trimmedConfirmPassword = confirmPassword.trim();
+  const loginPattern = /^[a-zA-Z0-9._-]+$/; // bez spacji
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const passwordPattern = /^.{4,}$/; // min. 4 znaki
 
-  // Sprawdzenie, czy dane są już używane
-  const foundLogin = users.find((u) => u.login === trimmedLogin);
-  const foundNick = users.find((u) => u.nick === trimmedNick);
-  const foundEmail = users.find((u) => u.email === trimmedEmail);
+  const isLoginValid = loginPattern.test(login);
+  const isEmailValid = emailPattern.test(email);
+  const isPasswordValid = passwordPattern.test(password);
+  const passwordsMatch = password === confirmPassword;
+
+  const foundLogin = users.find((u) => u.login === login);
+  const foundNick = users.find((u) => u.nick === nick);
+  const foundEmail = users.find((u) => u.email === email);
+
+  const isFormValid =
+    login &&
+    isLoginValid &&
+    nick &&
+    email &&
+    isEmailValid &&
+    isPasswordValid &&
+    passwordsMatch &&
+    !foundLogin &&
+    !foundNick &&
+    !foundEmail;
 
   const handleCreateAccount = () => {
     const newUser = {
       id: Date.now(),
-      login: trimmedLogin,
-      nick: trimmedNick,
-      email: trimmedEmail,
-      password: trimmedPassword,
+      login,
+      nick,
+      email,
+      password,
     };
 
     const updatedUsers = [...users, newUser];
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setUsers(updatedUsers);
 
-    // Reset formularza
     setLogin("");
     setNick("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    setTouched({
+      login: false,
+      nick: false,
+      email: false,
+      password: false,
+      confirmPassword: false,
+    });
 
     navigate("/login");
   };
-
-  const loginPattern = /^[a-zA-Z0-9._-]+$/;
-  const isloginPattern = loginPattern.test(trimmedLogin);
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const isEmailValid = emailPattern.test(trimmedEmail);
-
-  const isFormValid =
-    isloginPattern &&
-    trimmedLogin &&
-    trimmedNick &&
-    trimmedEmail &&
-    trimmedPassword.length < 5 &&
-    trimmedConfirmPassword &&
-    isEmailValid &&
-    trimmedPassword === trimmedConfirmPassword &&
-    !foundLogin &&
-    !foundNick &&
-    !foundEmail;
 
   return (
     <>
@@ -84,74 +92,77 @@ function Signup() {
               Zarejestruj się
             </h2>
 
+            {/* LOGIN */}
             <input
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="text"
               placeholder="Login"
+              pattern={loginPattern.source}
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
               value={login}
               onChange={(e) => setLogin(e.target.value)}
+              onBlur={() => setTouched((prev) => ({ ...prev, login: true }))}
               required
             />
-            {!isloginPattern && (
-              <span className="text-red-600">Login nie może miec spacji </span>
+            {touched.login && !isLoginValid && (
+              <p className="text-red-600">Login nie może zawierać spacji</p>
             )}
-            {login && trimmedLogin === "" && (
-              <span className="text-red-600">Login nie może być pusty</span>
-            )}
-            {foundLogin && (
-              <span className="text-red-600">Ten login jest już używany</span>
+            {touched.login && foundLogin && (
+              <p className="text-red-600">Ten login jest już używany</p>
             )}
 
+            {/* NICK */}
             <input
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="text"
               placeholder="Nick"
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
               value={nick}
               onChange={(e) => setNick(e.target.value)}
+              onBlur={() => setTouched((prev) => ({ ...prev, nick: true }))}
               required
             />
-            {nick && trimmedNick === "" && (
-              <span className="text-red-600">Nick nie może być pusty</span>
+            {touched.nick && !nick && (
+              <p className="text-red-600">Nick nie może być pusty</p>
             )}
-            {foundNick && (
-              <span className="text-red-600">Ten nick jest już używany</span>
+            {touched.nick && foundNick && (
+              <p className="text-red-600">Ten nick jest już używany</p>
             )}
 
+            {/* EMAIL */}
             <input
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="email"
               placeholder="E-mail"
+              pattern={emailPattern.source}
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
               required
             />
-            {email && trimmedEmail === "" && (
-              <span className="text-red-600">E-mail nie może być pusty</span>
+            {touched.email && !isEmailValid && (
+              <p className="text-red-600">Nieprawidłowy adres e-mail</p>
             )}
-            {email && !isEmailValid && (
-              <span className="text-red-600">Nieprawidłowy adres e-mail</span>
-            )}
-            {foundEmail && (
-              <span className="text-red-600">
-                Ten e-mail jest już zarejestrowany
-              </span>
+            {touched.email && foundEmail && (
+              <p className="text-red-600">Ten e-mail jest już zarejestrowany</p>
             )}
 
+            {/* HASŁO */}
             <div className="relative w-full">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Hasło"
-                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                minLength={4}
+                pattern={passwordPattern.source}
                 className="w-full mb-1 mt-2 px-4 py-2 border rounded pr-10"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\s/g, "");
+                  setPassword(value);
+                }}
+                onBlur={() =>
+                  setTouched((prev) => ({ ...prev, password: true }))
+                }
                 required
               />
-              {password.length > 0 && (
+              {password && (
                 <div
                   className="absolute top-5 right-3 cursor-pointer"
                   onClick={() => setShowPassword((prev) => !prev)}
@@ -159,24 +170,33 @@ function Signup() {
                   <GrFormView />
                 </div>
               )}
-              {password && trimmedPassword.length < 4 && (
-                <span className="text-red-600">Hasło musi mieć 4 znaki</span>
+              {touched.password && !isPasswordValid && (
+                <span className="text-red-600">
+                  Hasło musi mieć min. 4 znaki
+                </span>
               )}
             </div>
 
+            {/* POTWIERDZENIE HASŁA */}
             <input
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="password"
               placeholder="Potwierdź hasło"
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\s/g, "");
+                setConfirmPassword(value);
+              }}
+              onBlur={() =>
+                setTouched((prev) => ({ ...prev, confirmPassword: true }))
+              }
               required
             />
-            {trimmedPassword !== trimmedConfirmPassword && (
-              <span className="text-red-600">Hasła są różne</span>
+            {touched.confirmPassword && password && !passwordsMatch && (
+              <p className="text-red-600">Hasła są różne</p>
             )}
 
+            {/* PRZYCISK */}
             {isFormValid && (
               <button
                 type="button"
@@ -187,6 +207,7 @@ function Signup() {
               </button>
             )}
 
+            {/* ANULUJ */}
             <Link to="/">
               <button
                 type="button"
