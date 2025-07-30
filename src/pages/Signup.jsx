@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Header from "../assets/components/header";
 import { useState, useEffect } from "react";
 import { GrFormView } from "react-icons/gr";
@@ -54,14 +54,17 @@ function Signup() {
     navigate("/login");
   };
 
+  const loginPattern = /^[a-zA-Z0-9._-]+$/;
+  const isloginPattern = loginPattern.test(trimmedLogin);
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const isEmailValid = emailPattern.test(trimmedEmail);
 
   const isFormValid =
+    isloginPattern &&
     trimmedLogin &&
     trimmedNick &&
     trimmedEmail &&
-    trimmedPassword.length > 4 &&
+    trimmedPassword.length < 5 &&
     trimmedConfirmPassword &&
     isEmailValid &&
     trimmedPassword === trimmedConfirmPassword &&
@@ -82,6 +85,7 @@ function Signup() {
             </h2>
 
             <input
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="text"
               placeholder="Login"
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
@@ -89,6 +93,9 @@ function Signup() {
               onChange={(e) => setLogin(e.target.value)}
               required
             />
+            {!isloginPattern && (
+              <span className="text-red-600">Login nie może miec spacji </span>
+            )}
             {login && trimmedLogin === "" && (
               <span className="text-red-600">Login nie może być pusty</span>
             )}
@@ -97,6 +104,7 @@ function Signup() {
             )}
 
             <input
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="text"
               placeholder="Nick"
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
@@ -112,6 +120,7 @@ function Signup() {
             )}
 
             <input
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="email"
               placeholder="E-mail"
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"
@@ -135,8 +144,9 @@ function Signup() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Hasło"
-                className="w-full mb-1 mt-2 px-4 py-2 border rounded pr-10"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 minLength={4}
+                className="w-full mb-1 mt-2 px-4 py-2 border rounded pr-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -155,6 +165,7 @@ function Signup() {
             </div>
 
             <input
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               type="password"
               placeholder="Potwierdź hasło"
               className="w-full mb-1 mt-2 px-4 py-2 border rounded"

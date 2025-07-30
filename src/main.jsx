@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import Login from "./pages/login.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import Singup from "./pages/Signup.jsx";
 import AccontInfo from "./pages/account.jsx";
 import Designers from "./pages/Designers.jsx";

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Header from "../assets/components/header";
 import { GrFormView } from "react-icons/gr";
 import { useState } from "react";

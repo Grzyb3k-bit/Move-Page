@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import Header from "../assets/components/header";
 import { filmImages } from "../assets/components/FilmImages";
 import userIcon from "../assets/img/user.png";
